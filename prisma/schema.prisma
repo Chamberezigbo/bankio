@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String        @id @default(uuid())
+  firstName       String
+  lastName        String
+  password        String
+  email           String        @unique
+  accountNumber   String        @unique
+  accountType     String
+  balance         Float         @default(0.0)
+  profileImageUrl String
+  isSuspicious    Boolean       @default(false)
+  dateOfBirth     DateTime
+  phoneNumber     String
+  country         String
+  address         String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  transactions    Transaction[]
+  deposits        Deposit[]
+  transfers       Transfer[]
+}
+
+model Transaction {
+  id          String  @id @default(uuid())
+  type        String // 'deposit', 'transfer', 'withdrawal', etc.
+  amount      Float
+  status      String // 'pending', 'success', 'failed'
+  description String?
+  user        User    @relation(fields: [userId], references: [id])
+  userId      String
+
+  // Optional link to transfer record
+  transfer Transfer? // <-- Only declare relation here, no fields/references
+
+  // Optional link to deposit record
+  deposit Deposit? // <-- Only declare relation here, no fields/references
+
+  createdAt DateTime @default(now())
+}
+
+model Transfer {
+  id            String       @id @default(uuid())
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String
+  accountName   String
+  accountNumber String
+  bankName      String
+  bankAddress   String
+  country       String
+  currency      String
+  swiftCode     String
+  ibanNumber    String
+  amount        Float
+  transferType  String
+  description   String?
+  status        String
+  createdAt     DateTime     @default(now())
+  transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  transactionId String?      @unique
+}
+
+model Deposit {
+  id            String       @id @default(uuid())
+  user          User         @relation(fields: [userId], references: [id])
+  userId        String
+  amount        Float
+  status        String
+  createdAt     DateTime     @default(now())
+  transaction   Transaction? @relation(fields: [transactionId], references: [id])
+  transactionId String?      @unique
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,92 @@
+[2025-06-17T15:23:10.985Z] ERROR: POST /api/users/create - Unexpected field
+MulterError: Unexpected field
+    at wrappedFileFilter (/Users/Chambs/Documents/Backed servers /bank api/node_modules/multer/index.js:40:19)
+    at Multipart.<anonymous> (/Users/Chambs/Documents/Backed servers /bank api/node_modules/multer/lib/make-middleware.js:123:7)
+    at Multipart.emit (node:events:517:28)
+    at HeaderParser.cb (/Users/Chambs/Documents/Backed servers /bank api/node_modules/busboy/lib/types/multipart.js:358:14)
+    at HeaderParser.push (/Users/Chambs/Documents/Backed servers /bank api/node_modules/busboy/lib/types/multipart.js:162:20)
+    at SBMH.ssCb [as _cb] (/Users/Chambs/Documents/Backed servers /bank api/node_modules/busboy/lib/types/multipart.js:394:37)
+    at feed (/Users/Chambs/Documents/Backed servers /bank api/node_modules/streamsearch/lib/sbmh.js:248:10)
+    at SBMH.push (/Users/Chambs/Documents/Backed servers /bank api/node_modules/streamsearch/lib/sbmh.js:104:16)
+    at Multipart._write (/Users/Chambs/Documents/Backed servers /bank api/node_modules/busboy/lib/types/multipart.js:567:19)
+    at writeOrBuffer (node:internal/streams/writable:392:12)
+[2025-06-17T15:29:19.736Z] ERROR: POST /api/users/create - 
+Invalid `prisma.user.create()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/userController.js:43:36
+
+  40 }
+  41 
+  42 // Create user in DB
+→ 43 const user = await prisma.user.create({
+       data: {
+         firstName: "Chamberlain",
+         lastName: "Ezigbo",
+         email: "chamberezigbo@gmail.com",
+         password: "1234567890",
+         accountType: "savings",
+         profileImageUrl: "/uploads/profile-image/1750174159656_WhatsApp_Image_2025-05-12_at_01.00.46.jpeg",
+         accountNumber: "4714113756",
+         dateOfBirth: new Date("Invalid Date"),
+                      ~~~~~~~~~~~~~~~~~~~~~~~~
+         phoneNumber: "084738847383",
+         country: "London",
+         address: "325 waston road "
+       }
+     })
+
+Invalid value for argument `dateOfBirth`: Provided Date object is invalid. Expected Date.
+PrismaClientValidationError: 
+Invalid `prisma.user.create()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/userController.js:43:36
+
+  40 }
+  41 
+  42 // Create user in DB
+→ 43 const user = await prisma.user.create({
+       data: {
+         firstName: "Chamberlain",
+         lastName: "Ezigbo",
+         email: "chamberezigbo@gmail.com",
+         password: "1234567890",
+         accountType: "savings",
+         profileImageUrl: "/uploads/profile-image/1750174159656_WhatsApp_Image_2025-05-12_at_01.00.46.jpeg",
+         accountNumber: "4714113756",
+         dateOfBirth: new Date("Invalid Date"),
+                      ~~~~~~~~~~~~~~~~~~~~~~~~
+         phoneNumber: "084738847383",
+         country: "London",
+         address: "325 waston road "
+       }
+     })
+
+Invalid value for argument `dateOfBirth`: Provided Date object is invalid. Expected Date.
+    at kn (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:1363)
+    at e.throwValidationError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:10051)
+    at Ia (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:7488)
+    at ka (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:8741)
+    at Ia (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:8272)
+    at ka (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:8741)
+    at Et (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:5845)
+    at Nn (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:5747)
+    at /Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:10331
+    at Object.runInChildSpan (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:1549)
+[2025-06-18T21:55:21.333Z] ERROR: POST /api/admin/login - jwt is not defined
+ReferenceError: jwt is not defined
+    at loginAdmin (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:37:24)
+[2025-06-18T21:56:21.692Z] ERROR: POST /api/admin/login - JWT_SECRET is not defined
+ReferenceError: JWT_SECRET is not defined
+    at loginAdmin (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:40:12)
+[2025-06-18T21:57:05.590Z] ERROR: POST /api/admin/login - JWT_SECRET is not defined
+ReferenceError: JWT_SECRET is not defined
+    at loginAdmin (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:40:12)
+[2025-06-18T23:12:51.745Z] ERROR: PUT /api/admin/update/44ef303d-06ca-4640-acd9-8fc6cee451d4 - deleteOldProfileImage is not a function
+TypeError: deleteOldProfileImage is not a function
+    at updateUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:156:13)
+[2025-06-18T23:15:00.574Z] ERROR: PUT /api/admin/update/44ef303d-06ca-4640-acd9-8fc6cee451d4 - Image processing failed
+Error: Image processing failed
+    at processImage (/Users/Chambs/Documents/Backed servers /bank api/src/config/compress.js:32:11)
+    at async updateUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:159:36)
+[2025-06-18T23:23:31.854Z] ERROR: PUT /api/admin/update/44ef303d-06ca-4640-acd9-8fc6cee451d4 - Image processing failed
+Error: Image processing failed
+    at processImage (/Users/Chambs/Documents/Backed servers /bank api/src/config/compress.js:32:11)
+    at async updateUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:159:36)
