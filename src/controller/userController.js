@@ -64,7 +64,7 @@ const createUser = async (req, res, next) => {
         phoneNumber,
         country,
         address,
-        accountBalance
+        balance:accountBalance
       },
     });
 

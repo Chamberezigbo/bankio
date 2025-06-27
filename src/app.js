@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require("cors");
+const path = require('path');
 
 const userRoutes = require('./routes/userRoutes'); // example route
 const transactionRoutes = require('./routes/transactionsRoutes'); 
@@ -8,6 +9,12 @@ const errorLogger = require('./middleware/error'); // error logger
 
 
 const app = express();
+
+// Serve static files from "src/upload" via "/uploads"
+app.use(
+  "/api/profile-images",
+  express.static(path.join(__dirname, "uploads/profile-image"))
+);
 
 app.use(cors()); // Enable CORS for all routes
 
