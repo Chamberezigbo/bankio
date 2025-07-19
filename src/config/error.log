@@ -90,3 +90,45 @@ Error: Image processing failed
 Error: Image processing failed
     at processImage (/Users/Chambs/Documents/Backed servers /bank api/src/config/compress.js:32:11)
     at async updateUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:159:36)
+[2025-07-19T10:17:14.550Z] ERROR: POST /api/admin/user/44ef303d-06ca-4640-acd9-8fc6cee451d4/transaction - 
+Invalid `prisma.user.update()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:267:23
+
+  264 }
+  265 
+  266 // Update user balance
+→ 267 await prisma.user.update({
+        where: {
+          id: "44ef303d-06ca-4640-acd9-8fc6cee451d4"
+        },
+        data: {
+          balance: "24003600"
+                   ~~~~~~~~~~
+        }
+      })
+
+Argument `balance`: Invalid value provided. Expected Float or FloatFieldUpdateOperationsInput, provided String.
+PrismaClientValidationError: 
+Invalid `prisma.user.update()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:267:23
+
+  264 }
+  265 
+  266 // Update user balance
+→ 267 await prisma.user.update({
+        where: {
+          id: "44ef303d-06ca-4640-acd9-8fc6cee451d4"
+        },
+        data: {
+          balance: "24003600"
+                   ~~~~~~~~~~
+        }
+      })
+
+Argument `balance`: Invalid value provided. Expected Float or FloatFieldUpdateOperationsInput, provided String.
+    at kn (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:1363)
+    at Zn.handleRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:7102)
+    at Zn.handleAndLogRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6784)
+    at Zn.request (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6491)
+    at async l (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:9778)
+    at async initiateUserTransaction (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:267:5)

@@ -2,6 +2,8 @@ const prisma = require("../utils/prismaClient");
 const jwt = require("jsonwebtoken");
 const processImage = require("../config/compress");
 const {deleteOldProfileImage} = require("../service/deleteOldProImg");
+const { sendEmail } = require("../service/emailTransporter");
+const transferNotificationTemplate = require("../template/emailTemp");
 
 // Set your JWT secret in .env as JWT_SECRET
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -28,38 +30,38 @@ const createAdmin = async (req, res, next) => {
 };
 
 const loginAdmin = async (req, res, next) => {
-       try {
-         const { email, password } = req.body;
-     
-         // Find admin by email
-         const admin = await prisma.admin.findUnique({
-           where: { email },
-         });
-         if (!admin || admin.password !== password) {
-           return res.status(401).json({success:false, error: "Invalid email or password" });
-         }
-     
-         // Generate JWT token
-         const token = jwt.sign(
-           { adminId: admin.id, email: admin.email },
-           JWT_SECRET,
-           { expiresIn: "7d" }
-         );
-     
-         res.status(200).json({
-           success: true,
-           message: "Login successful",
-           token,
-           admin: {
-             id: admin.id,
-             firstName: admin.firstName,
-             lastName: admin.lastName,
-             email: admin.email,
-           },
-         });
-       } catch (err) {
-         next(err);
-       }
+  try {
+    const { email, password } = req.body;
+
+    // Find admin by email
+    const admin = await prisma.admin.findUnique({
+      where: { email },
+    });
+    if (!admin || admin.password !== password) {
+      return res.status(401).json({success:false, error: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { adminId: admin.id, email: admin.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      admin: {
+        id: admin.id,
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+        email: admin.email,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // Delete an admin by ID
@@ -175,10 +177,150 @@ const updateUser = async (req, res, next) => {
   }
 };
 
+// Get all transactions for a particular user (for admin)
+const getUserTransactions = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Get all transactions for the user
+    const transactions = await prisma.transaction.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.status(200).json({ success: true, transactions });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Edit/update a user's transaction details (for admin)
+const updateUserTransaction = async (req, res, next) => {
+  try {
+    const { transactionId } = req.params;
+    const {
+      type,
+      amount,
+      status,
+      description,
+    } = req.body;
+
+    // Find transaction
+    const transaction = await prisma.transaction.findUnique({ where: { id: transactionId } });
+    if (!transaction) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    // Build update data object with only provided fields
+    const updateData = {};
+    if (type !== undefined) updateData.type = type;
+    if (amount !== undefined) updateData.amount = amount;
+    if (status !== undefined) updateData.status = status;
+    if (description !== undefined) updateData.description = description;
+
+    // Update transaction
+    const updatedTransaction = await prisma.transaction.update({
+      where: { id: transactionId },
+      data: updateData,
+    });
+
+    res.status(200).json({ success: true, transaction: updatedTransaction });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+const initiateUserTransaction = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { type, amount, description, status } = req.body; // type: 'credit' or 'debit'
+
+    // Find user
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    let newBalance = user.balance;
+    let transactionType = type.toLowerCase();
+    const numericAmount = parseFloat(amount);
+
+    // Debit: subtract, Credit: add
+    if (transactionType === "debit") {
+      if (numericAmount > user.balance) {
+        return res.status(400).json({ error: "Insufficient balance for debit transaction" });
+      }
+      newBalance -= numericAmount;
+    } else if (transactionType === "credit") {
+      newBalance += numericAmount;
+    } else {
+      return res.status(400).json({ error: "Transaction type must be 'credit' or 'debit'" });
+    }
+
+    // Update user balance
+    await prisma.user.update({
+      where: { id: userId },
+      data: { balance: newBalance },
+    });
+
+    // Create transaction record
+    const transaction = await prisma.transaction.create({
+      data: {
+        type: transactionType,
+        amount:numericAmount,
+        status: status || "success",
+        description,
+        userId,
+      },
+    });
+
+    // Prepare email details
+    const transactionDetailsHtml = `
+      <b>Transaction Type:</b> ${transactionType}<br>
+      <b>Amount:</b> ${amount}<br>
+      <b>Description:</b> ${description || "N/A"}<br>
+      <b>Status:</b> ${transaction.status}<br>
+      <b>New Balance:</b> ${newBalance}<br>
+    `;
+    const emailMessage =
+      transactionType === "credit"
+        ? "Your account has been credited!"
+        : "Your account has been debited!";
+
+    // Send email notification
+    const html = transferNotificationTemplate(
+      user.firstName,
+      transactionDetailsHtml,
+      emailMessage
+    );
+    await sendEmail(user.email, `Account ${transactionType === "credit" ? "Credit" : "Debit"} Notification`, html);
+
+    res.status(201).json({
+      success: true,
+      message: `Transaction (${transactionType}) successful`,
+      transaction,
+      newBalance,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 module.exports = {
   createAdmin,
   deleteAdmin,
   loginAdmin,
   getAllUsers,
   updateUser,
+  getUserTransactions,
+  updateUserTransaction,
+  initiateUserTransaction,
 };

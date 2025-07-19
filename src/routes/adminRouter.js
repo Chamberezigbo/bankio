@@ -1,5 +1,10 @@
 const express = require('express');
-const { createAdmin, loginAdmin,deleteAdmin,getAllUsers, updateUser } = require('../controller/adminController');
+const { 
+  createAdmin, loginAdmin,deleteAdmin,getAllUsers,
+  updateUser,getUserTransactions,updateUserTransaction,
+  initiateUserTransaction
+}
+ = require('../controller/adminController');
 const { adminValidationRules, loginValidationRules, validate } = require('../middleware/validator')
 const { authenticate } = require('../middleware/userAuth');
 
@@ -35,6 +40,24 @@ router.put(
   "/update/:id",
   upload.single("profilePicture"),
   updateUser
+);
+
+router.get(
+  '/user/:userId/transactions',
+  authenticate, // admin authentication middleware
+  getUserTransactions
+);
+
+router.put(
+  '/transaction/:transactionId',
+  authenticate, // admin authentication middleware
+  updateUserTransaction
+);
+
+router.post(
+  '/user/:userId/transaction',
+  authenticate, // admin authentication middleware
+  initiateUserTransaction
 );
 
 module.exports = router;
