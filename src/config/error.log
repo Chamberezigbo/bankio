@@ -132,3 +132,73 @@ Argument `balance`: Invalid value provided. Expected Float or FloatFieldUpdateOp
     at Zn.request (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6491)
     at async l (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:9778)
     at async initiateUserTransaction (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:267:5)
+[2025-07-28T13:15:58.831Z] ERROR: DELETE /api/admin/user/delete/44ef303d-06ca-4640-acd9-8fc6cee451d4 - invalid signature
+JsonWebTokenError: invalid signature
+    at /Users/Chambs/Documents/Backed servers /bank api/node_modules/jsonwebtoken/verify.js:171:19
+    at getSecret (/Users/Chambs/Documents/Backed servers /bank api/node_modules/jsonwebtoken/verify.js:97:14)
+    at module.exports [as verify] (/Users/Chambs/Documents/Backed servers /bank api/node_modules/jsonwebtoken/verify.js:101:10)
+    at authenticate (/Users/Chambs/Documents/Backed servers /bank api/src/middleware/userAuth.js:13:25)
+    at Layer.handleRequest (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/layer.js:152:17)
+    at next (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/route.js:157:13)
+    at Route.dispatch (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/route.js:117:3)
+    at handle (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/index.js:435:11)
+    at Layer.handleRequest (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/layer.js:152:17)
+    at /Users/Chambs/Documents/Backed servers /bank api/node_modules/router/index.js:295:15
+[2025-07-28T13:16:52.185Z] ERROR: DELETE /api/admin/user/delete/44ef303d-06ca-4640-acd9-8fc6cee451d4 - 
+Invalid `prisma.user.delete()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:29
+
+  93   return res.status(404).json({ error: "Admin not found" });
+  94 }
+  95 
+→ 96 await prisma.user.delete(
+Foreign key constraint violated on the fields: (`userId`)
+PrismaClientKnownRequestError: 
+Invalid `prisma.user.delete()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:29
+
+  93   return res.status(404).json({ error: "Admin not found" });
+  94 }
+  95 
+→ 96 await prisma.user.delete(
+Foreign key constraint violated on the fields: (`userId`)
+    at Zn.handleRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:7459)
+    at Zn.handleAndLogRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6784)
+    at Zn.request (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6491)
+    at async l (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:9778)
+    at async deleteUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:5)
+[2025-07-28T13:17:52.583Z] ERROR: GET /api/admin/getAll - jwt expired
+TokenExpiredError: jwt expired
+    at /Users/Chambs/Documents/Backed servers /bank api/node_modules/jsonwebtoken/verify.js:190:21
+    at getSecret (/Users/Chambs/Documents/Backed servers /bank api/node_modules/jsonwebtoken/verify.js:97:14)
+    at module.exports [as verify] (/Users/Chambs/Documents/Backed servers /bank api/node_modules/jsonwebtoken/verify.js:101:10)
+    at authenticate (/Users/Chambs/Documents/Backed servers /bank api/src/middleware/userAuth.js:13:25)
+    at Layer.handleRequest (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/layer.js:152:17)
+    at next (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/route.js:157:13)
+    at Route.dispatch (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/route.js:117:3)
+    at handle (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/index.js:435:11)
+    at Layer.handleRequest (/Users/Chambs/Documents/Backed servers /bank api/node_modules/router/lib/layer.js:152:17)
+    at /Users/Chambs/Documents/Backed servers /bank api/node_modules/router/index.js:295:15
+[2025-07-28T13:18:23.584Z] ERROR: DELETE /api/admin/user/delete/44ef303d-06ca-4640-acd9-8fc6cee451d4 - 
+Invalid `prisma.user.delete()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:29
+
+  93   return res.status(404).json({ error: "Admin not found" });
+  94 }
+  95 
+→ 96 await prisma.user.delete(
+Foreign key constraint violated on the fields: (`userId`)
+PrismaClientKnownRequestError: 
+Invalid `prisma.user.delete()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:29
+
+  93   return res.status(404).json({ error: "Admin not found" });
+  94 }
+  95 
+→ 96 await prisma.user.delete(
+Foreign key constraint violated on the fields: (`userId`)
+    at Zn.handleRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:7459)
+    at Zn.handleAndLogRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6784)
+    at Zn.request (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6491)
+    at async l (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:9778)
+    at async deleteUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:5)

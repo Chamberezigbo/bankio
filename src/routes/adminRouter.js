@@ -2,7 +2,7 @@ const express = require('express');
 const { 
   createAdmin, loginAdmin,deleteAdmin,getAllUsers,
   updateUser,getUserTransactions,updateUserTransaction,
-  initiateUserTransaction
+  initiateUserTransaction, deleteUser
 }
  = require('../controller/adminController');
 const { adminValidationRules, loginValidationRules, validate } = require('../middleware/validator')
@@ -29,6 +29,12 @@ router.delete(
   authenticate,
   deleteAdmin
 );
+
+router.delete(
+  '/user/delete/:id',
+  authenticate,
+  deleteUser
+)
 
 router.get(
        '/getAll',

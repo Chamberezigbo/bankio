@@ -24,8 +24,13 @@ const initiateTransfer = async (req, res, next) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).json({ error: "User not found" });
 
+    // ✅ Check if transfers are enabled for this user
+    if (!user.isSuspicious) {
+    return res.status(403).json({ success:false, error: "Transfers are currently disabled for your account. Please contact support." });
+    }
+
     if (parseFloat(amount) > user.balance) {
-      return res.status(400).json({ error: "Insufficient account balance" });
+      return res.status(400).json({success:false, error: "Insufficient account balance" });
     }
 
     // Deduct amount from user balance

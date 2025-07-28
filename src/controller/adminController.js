@@ -83,6 +83,30 @@ const deleteAdmin = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Check if admin exists
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Delete related records and the user in a single transaction
+    await prisma.$transaction([
+      prisma.transaction.deleteMany({ where: { userId: id } }),
+      prisma.deposit.deleteMany({ where: { userId: id } }),
+      prisma.transfer.deleteMany({ where: { userId: id } }),
+      prisma.user.delete({ where: { id } }),
+    ]);
+
+    res.status(200).json({ success: true, message: "User and all related records deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Get all users (for admin)
 const getAllUsers = async (req, res, next) => {
   try {
@@ -317,6 +341,7 @@ const initiateUserTransaction = async (req, res, next) => {
 module.exports = {
   createAdmin,
   deleteAdmin,
+  deleteUser,
   loginAdmin,
   getAllUsers,
   updateUser,
