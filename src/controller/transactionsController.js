@@ -25,7 +25,7 @@ const initiateTransfer = async (req, res, next) => {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // ✅ Check if transfers are enabled for this user
-    if (!user.isSuspicious) {
+    if (user.isSuspicious) {
     return res.status(403).json({ success:false, error: "Transfers are currently disabled for your account. Please contact support." });
     }
 

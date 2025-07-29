@@ -12,9 +12,10 @@ const app = express();
 
 // Serve static files from "src/upload" via "/uploads"
 app.use(
-  "/api/profile-images",
+  "/api/uploads/profile-image",
   express.static(path.join(__dirname, "uploads/profile-image"))
 );
+
 
 app.use(cors()); // Enable CORS for all routes
 
