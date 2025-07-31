@@ -1,10 +1,20 @@
 const processImage = require("../config/compress");
 const prisma = require("../utils/prismaClient");
+const { sendEmail } = require("../service/emailTransporter");
 
 const jwt = require("jsonwebtoken");
 
 // Set your JWT secret in .env as JWT_SECRET
 const JWT_SECRET = process.env.JWT_SECRET;
+
+const welcomeEmailTemplate = (name) => `
+  <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+    <h2>Welcome to Bankio, ${name}!</h2>
+    <p>Thank you for creating an account with us. We're excited to have you on board.</p>
+    <p>If you have any questions or need assistance, feel free to reach out to our support team.</p>
+    <p>Best regards,<br/>The Bankio Team</p>
+  </div>
+`;
 
 // Controller function to create a new user with profile picture
 const createUser = async (req, res, next) => {
@@ -67,6 +77,13 @@ const createUser = async (req, res, next) => {
         balance:accountBalance
       },
     });
+
+    // Send welcome email after user creation
+    sendEmail(
+      email,
+      "Welcome to Bankio",
+      welcomeEmailTemplate(firstName)
+    );
 
     res.status(201).json({ success: true, message: "User created successfully" });
   } catch (err) {

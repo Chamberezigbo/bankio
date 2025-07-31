@@ -202,3 +202,59 @@ Foreign key constraint violated on the fields: (`userId`)
     at Zn.request (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6491)
     at async l (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:9778)
     at async deleteUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/adminController.js:96:5)
+[2025-07-31T10:24:17.721Z] ERROR: POST /api/users/create - 
+Invalid `prisma.user.create()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/userController.js:64:36
+
+  61 }
+  62 
+  63 // Create user in DB
+→ 64 const user = await prisma.user.create({
+       data: {
+         firstName: "Test",
+         lastName: "User",
+         email: "testuser@example.com",
+         password: "password123",
+         accountType: "standard",
+         accountNumber: "5762421983",
+         dateOfBirth: new Date("1990-01-01T00:00:00.000Z"),
+         phoneNumber: "1234567890",
+         country: "USA",
+         address: "123 Test St",
+         balance: 0,
+     +   profileImageUrl: String
+       }
+     })
+
+Argument `profileImageUrl` must not be null.
+PrismaClientValidationError: 
+Invalid `prisma.user.create()` invocation in
+/Users/Chambs/Documents/Backed servers /bank api/src/controller/userController.js:64:36
+
+  61 }
+  62 
+  63 // Create user in DB
+→ 64 const user = await prisma.user.create({
+       data: {
+         firstName: "Test",
+         lastName: "User",
+         email: "testuser@example.com",
+         password: "password123",
+         accountType: "standard",
+         accountNumber: "5762421983",
+         dateOfBirth: new Date("1990-01-01T00:00:00.000Z"),
+         phoneNumber: "1234567890",
+         country: "USA",
+         address: "123 Test St",
+         balance: 0,
+     +   profileImageUrl: String
+       }
+     })
+
+Argument `profileImageUrl` must not be null.
+    at kn (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:32:1363)
+    at Zn.handleRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:7102)
+    at Zn.handleAndLogRequestError (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6784)
+    at Zn.request (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:124:6491)
+    at async l (/Users/Chambs/Documents/Backed servers /bank api/generated/prisma/runtime/library.js:133:9778)
+    at async createUser (/Users/Chambs/Documents/Backed servers /bank api/src/controller/userController.js:64:18)
