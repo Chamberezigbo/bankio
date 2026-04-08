@@ -36,6 +36,15 @@ model User {
   transfers       Transfer[]
 }
 
+model Otp {
+  id        String   @id @default(uuid())
+  email     String   @unique  // one OTP per email at a time
+  code      String            // the 6-digit number
+  expiresAt DateTime          // we'll set this to 10 mins from now
+  createdAt DateTime @default(now())
+}
+
+
 model Transaction {
   id          String  @id @default(uuid())
   type        String // 'deposit', 'transfer', 'withdrawal', etc.

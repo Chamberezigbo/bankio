@@ -1,6 +1,6 @@
 const express = require("express");
 const upload = require("../middleware/upload");
-const { createUser,loginUser } = require("../controller/userController");
+const { createUser,loginUser,verifyLoginOtp, resendLoginOtp } = require("../controller/userController");
 const { userValidationRules,loginValidationRules, validate } = require("../middleware/validator");
 
 const router = express.Router();
@@ -19,5 +19,10 @@ router.post(
   validate,
   loginUser
 );
+
+router.post("/resend-otp", resendLoginOtp);
+
+router.post("/verify-otp", verifyLoginOtp);
+
 
 module.exports = router;

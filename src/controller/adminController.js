@@ -1,7 +1,7 @@
 const prisma = require("../utils/prismaClient");
 const jwt = require("jsonwebtoken");
 const processImage = require("../config/compress");
-const {deleteOldProfileImage} = require("../service/deleteOldProImg");
+const { deleteOldProfileImage } = require("../service/deleteOldProImg");
 const { sendEmail } = require("../service/emailTransporter");
 const transferNotificationTemplate = require("../template/emailTemp");
 
@@ -38,7 +38,7 @@ const loginAdmin = async (req, res, next) => {
       where: { email },
     });
     if (!admin || admin.password !== password) {
-      return res.status(401).json({success:false, error: "Invalid email or password" });
+      return res.status(401).json({ success: false, error: "Invalid email or password" });
     }
 
     // Generate JWT token
@@ -298,7 +298,7 @@ const initiateUserTransaction = async (req, res, next) => {
     const transaction = await prisma.transaction.create({
       data: {
         type: transactionType,
-        amount:numericAmount,
+        amount: numericAmount,
         status: status || "success",
         description,
         userId,
@@ -337,6 +337,101 @@ const initiateUserTransaction = async (req, res, next) => {
   }
 };
 
+const generateDummyTransactions = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { fromDate, toDate, count = 10 } = req.body;
+    // count defaults to 10 if not provided
+
+    // 1. Check user exists
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const from = new Date(fromDate);
+    const to = new Date(toDate);
+
+    if (isNaN(from) || isNaN(to) || from >= to) {
+      return res.status(400).json({ error: "Invalid date range" });
+    }
+
+    // 2. Dummy data pools to pick from randomly
+    const types = ["credit", "debit"];
+    const descriptions = [
+      // Shopping
+      "Online purchase", "Grocery shopping", "Clothing store purchase",
+      "Electronics purchase", "Pharmacy purchase", "Bookstore purchase",
+      "Furniture payment", "Jewellery purchase", "Sports equipment",
+
+      // Bills & Utilities
+      "Utility bill", "Electricity bill", "Water bill",
+      "Internet subscription", "Cable TV bill", "Gas bill",
+      "Rent payment", "Property tax", "Insurance premium",
+
+      // Finance & Transfers
+      "Salary payment", "Transfer received", "Wire transfer",
+      "Refund processed", "Loan repayment", "Mortgage payment",
+      "Dividend credit", "Investment deposit", "Pension credit",
+      "Tax refund", "Bonus payment", "Commission received",
+
+      // Services & Subscriptions
+      "Subscription fee", "Streaming service", "Cloud storage payment",
+      "Gym membership", "Parking fee", "Toll payment",
+      "Courier service", "Laundry service", "Cleaning service",
+
+      // Food & Lifestyle
+      "Restaurant payment", "Food delivery order", "Coffee shop",
+      "Hotel booking", "Flight ticket", "Car rental",
+      "Event ticket", "Concert ticket", "Museum entry",
+
+      // Mobile & Tech
+      "Data bundle purchase", "App subscription",
+      "Software license", "Domain renewal",
+
+      // ATM & Cash
+      "ATM withdrawal", "Cash deposit", "POS purchase",
+      "Cheque deposit", "Currency exchange",
+    ];
+
+
+    // 3. Loop and create `count` transactions
+    const transactions = [];
+    for (let i = 0; i < count; i++) {
+
+      // Pick a random date between fromDate and toDate
+      const randomTime = from.getTime() + Math.random() * (to.getTime() - from.getTime());
+      const createdAt = new Date(randomTime);
+
+      const type = types[Math.floor(Math.random() * types.length)];
+      const amount = parseFloat((Math.random() * 4900 + 100).toFixed(2)); // $100 - $5000
+      const description = descriptions[Math.floor(Math.random() * descriptions.length)];
+
+      transactions.push({
+        type,
+        amount,
+        status: "success",
+        description,
+        userId,
+        createdAt, // use the random date
+      });
+    }
+
+    // 4. Insert all at once using createMany
+    await prisma.transaction.createMany({ data: transactions });
+
+    res.status(201).json({
+      success: true,
+      message: `${count} dummy transactions generated`,
+      fromDate,
+      toDate,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 
 module.exports = {
   createAdmin,
@@ -348,4 +443,5 @@ module.exports = {
   getUserTransactions,
   updateUserTransaction,
   initiateUserTransaction,
+  generateDummyTransactions
 };

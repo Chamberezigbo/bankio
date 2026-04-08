@@ -2,7 +2,7 @@ const express = require('express');
 const { 
   createAdmin, loginAdmin,deleteAdmin,getAllUsers,
   updateUser,getUserTransactions,updateUserTransaction,
-  initiateUserTransaction, deleteUser
+  initiateUserTransaction, deleteUser, generateDummyTransactions
 }
  = require('../controller/adminController');
 const { adminValidationRules, loginValidationRules, validate } = require('../middleware/validator')
@@ -65,5 +65,12 @@ router.post(
   authenticate, // admin authentication middleware
   initiateUserTransaction
 );
+
+router.post(
+  '/user/:userId/generate-transactions',
+  authenticate,
+  generateDummyTransactions
+);
+
 
 module.exports = router;

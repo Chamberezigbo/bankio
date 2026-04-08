@@ -1,5 +1,5 @@
 const express = require("express");
-const { initiateTransfer } = require("../controller/transactionsController");
+const { initiateTransfer, verifyTransferOtp, resendTransferOtp } = require("../controller/transactionsController");
 const { transferValidationRules, validate } = require("../middleware/validator");
 const { authenticate } = require("../middleware/userAuth");
 
@@ -11,6 +11,18 @@ router.post(
   validate,
   authenticate, // Ensure the user is authenticated before allowing transfer
   initiateTransfer,
+);
+
+router.post(
+  "/transfer/verify-otp",
+  authenticate,
+  verifyTransferOtp
+);
+
+router.post(
+  "/transfer/resend-otp",
+  authenticate,
+  resendTransferOtp
 );
 
 module.exports = router;
