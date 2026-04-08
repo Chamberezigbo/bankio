@@ -4,10 +4,12 @@ require("dotenv").config();
 // 📩 Setup email transporter//
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.EMAIL_HOST,  // your provider's SMTP server
+  port: 465,                    // usually 465 (SSL) or 587 (TLS)
+  secure: true,                 // true for 465, false for 587
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASS,  // your actual email password (not an app password)
   },
 });
 
@@ -22,7 +24,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     await transporter.sendMail({
-      from: `'Bankio' <${process.env.EMAIL_USER}>`,
+      from: `'America First Credit' <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,
