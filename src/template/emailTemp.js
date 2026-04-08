@@ -8,7 +8,7 @@ const transferNotificationTemplate = (
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shulioo Transfer Notification</title>
+  <title>America First Credit Transfer Notification</title>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; margin: 0; padding: 0; background-color: #f5f7fa; color: #111827; line-height: 1.5;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -27,8 +27,7 @@ const transferNotificationTemplate = (
                     </svg>
                   </td>
                   <td style="padding-left: 10px; vertical-align: middle;">
-                    <span style="color: #4a5568; font-weight: 600; font-size: 20px;">Shulioo</span>
-                    <span style="color: #4a5568; font-weight: 400; font-size: 20px;">App</span>
+                    <span style="color: #4a5568; font-weight: 600; font-size: 20px;">America First Credit</span>
                   </td>
                 </tr>
               </table>
@@ -50,7 +49,7 @@ const transferNotificationTemplate = (
               
               <div style="margin-top: 32px;">
                 <p style="margin-bottom: 8px; font-size: 16px; color: #111827;">Best regards,</p>
-                <p style="margin-bottom: 0; font-size: 16px; color: #111827;">Shulioo Team</p>
+                <p style="margin-bottom: 0; font-size: 16px; color: #111827;">America First Credit Team</p>
               </div>
             </td>
           </tr>
@@ -105,4 +104,29 @@ const transferNotificationTemplate = (
 </html>
 `;
 
-module.exports = transferNotificationTemplate;
+// For login OTP
+const loginOtpTemplate = (name, otp) => `
+  <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+    <h2>Hello ${name},</h2>
+    <p>You requested to log in to your America First Credit account. Use the OTP below:</p>
+    <h1 style="letter-spacing: 8px; color: #00c853;">${otp}</h1>
+    <p>This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
+    <p>If you didn't request this, please secure your account immediately.</p>
+    <p>— The America First Credit Team</p>
+  </div>
+`;
+
+// For transfer OTP
+const transferOtpTemplate = (name, otp, amount) => `
+  <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+    <h2>Hello ${name},</h2>
+    <p>You initiated a transfer of <strong>${amount}</strong>. Enter the OTP below to confirm:</p>
+    <h1 style="letter-spacing: 8px; color: #00c853;">${otp}</h1>
+    <p>This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
+    <p>If you did not initiate this transfer, contact support immediately.</p>
+    <p>— The America First Credit Team</p>
+  </div>
+`;
+
+
+module.exports = { transferNotificationTemplate, loginOtpTemplate, transferOtpTemplate };
