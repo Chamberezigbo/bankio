@@ -119,7 +119,16 @@ const loginUser = async (req, res, next) => {
     // 5. Send OTP email
     await sendEmail(email, "Your America First Credit Login OTP", loginOtpTemplate(user.firstName, code));
 
-    res.status(200).json({ success: true, message: "OTP sent to your email" });
+    res.status(200).json({
+      success: true,
+      message: "OTP sent to your email",
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      }
+    });
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,6 @@
 const prisma = require("../utils/prismaClient");
 const { sendEmail } = require("../service/emailTransporter");
-const {transferNotificationTemplate, transferOtpTemplate} = require("../template/emailTemp");
+const { transferNotificationTemplate, transferOtpTemplate } = require("../template/emailTemp");
 
 
 const initiateTransfer = async (req, res, next) => {
@@ -49,7 +49,10 @@ const initiateTransfer = async (req, res, next) => {
     });
 
     // 4. Send OTP email
-    await sendEmail(user.email, "Confirm Your Transfer - America First Credit OTP", transferOtpTemplate(user.firstName, code));
+    await sendEmail(user.email,
+      "Confirm Your Transfer - America First Credit OTP",
+      transferOtpTemplate(user.firstName, code, `$${parseFloat(amount).toLocaleString()}`)
+    );
 
     res.status(200).json({
       success: true,
