@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const processImage = require("../config/compress");
 const { deleteOldProfileImage } = require("../service/deleteOldProImg");
 const { sendEmail } = require("../service/emailTransporter");
-const {transferNotificationTemplate} = require("../template/emailTemp");
+const { transferNotificationTemplate } = require("../template/emailTemp");
 
 // Set your JWT secret in .env as JWT_SECRET
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -233,6 +233,7 @@ const updateUserTransaction = async (req, res, next) => {
       amount,
       status,
       description,
+      date
     } = req.body;
 
     // Find transaction
@@ -244,9 +245,12 @@ const updateUserTransaction = async (req, res, next) => {
     // Build update data object with only provided fields
     const updateData = {};
     if (type !== undefined) updateData.type = type;
-    if (amount !== undefined) updateData.amount = amount;
+    if (amount !== undefined) updateData.amount = parseFloat(amount);
     if (status !== undefined) updateData.status = status;
     if (description !== undefined) updateData.description = description;
+    if (date !== undefined) updateData.createdAt = new Date(date);
+
+
 
     // Update transaction
     const updatedTransaction = await prisma.transaction.update({
@@ -264,7 +268,13 @@ const updateUserTransaction = async (req, res, next) => {
 const initiateUserTransaction = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const { type, amount, description, status } = req.body; // type: 'credit' or 'debit'
+    const {
+      type,
+      amount,
+      description,
+      status,
+      date
+    } = req.body; // type: 'credit' or 'debit'
 
     // Find user
     const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -302,6 +312,7 @@ const initiateUserTransaction = async (req, res, next) => {
         status: status || "success",
         description,
         userId,
+        createdAt: date ? new Date(date) : new Date(),
       },
     });
 
@@ -340,7 +351,13 @@ const initiateUserTransaction = async (req, res, next) => {
 const generateDummyTransactions = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const { fromDate, toDate, count = 10 } = req.body;
+    const { 
+      fromDate, 
+      toDate, 
+      count = 10,
+      maxAmount = 526000,
+       minAmount = 9100
+    } = req.body;
     // count defaults to 10 if not provided
 
     // 1. Check user exists
@@ -404,7 +421,7 @@ const generateDummyTransactions = async (req, res, next) => {
       const createdAt = new Date(randomTime);
 
       const type = types[Math.floor(Math.random() * types.length)];
-      const amount = parseFloat((Math.random() * 4900 + 100).toFixed(2)); // $100 - $5000
+      const amount = parseFloat((Math.random() * (maxAmount - minAmount) + minAmount).toFixed(2));
       const description = descriptions[Math.floor(Math.random() * descriptions.length)];
 
       transactions.push({

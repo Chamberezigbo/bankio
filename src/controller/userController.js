@@ -160,7 +160,7 @@ const verifyLoginOtp = async (req, res, next) => {
 
     // 5. Fetch user and return JWT token
     const user = await prisma.user.findUnique({ where: { email } });
-    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
 
     res.status(200).json({
       success: true,
