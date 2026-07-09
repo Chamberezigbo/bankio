@@ -2,8 +2,14 @@ const sharp = require("sharp");
 const fs = require("fs").promises;
 const path = require("path");
 
-// Allowed MIME types
-const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg"];
+// Allowed MIME types (kept in sync with src/middleware/upload.js)
+const allowedMimeTypes = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
 
 const processImage = async (buffer, folder, filename) => {
   const outputDir = path.join(__dirname, "..", "uploads", folder);
